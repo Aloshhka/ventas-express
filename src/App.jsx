@@ -2,80 +2,62 @@ function App() {
   const navItems = ['Categorías', 'Ofertas', 'Más vendidos', 'Cupones']
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+    <div className="font-sans">
 
-      <header style={{
-        backgroundColor: '#1E3A8A',
-        padding: '12px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            backgroundColor: '#374151',
-            borderRadius: '50%',
-            width: '42px',
-            height: '42px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '20px'
-          }}>
+      {/* HEADER */}
+      <header className="bg-[#1E3A8A] px-6 py-3 flex items-center gap-3">
+
+        {/* LOGO */}
+        <div className="flex items-center gap-3">
+          <div className="bg-[#374151] rounded-full w-10 h-10 flex items-center justify-center text-xl">
             ⚡
           </div>
-          <div style={{ lineHeight: '1.1' }}>
-            <div style={{ color: 'white', fontWeight: 'bold', fontSize: '16px', letterSpacing: '1px' }}>
+          <div className="leading-tight">
+            <div className="text-white font-bold text-base tracking-widest">
               VENTAS
             </div>
-            <div style={{ color: '#374151', fontWeight: 'bold', fontSize: '16px', letterSpacing: '1px', backgroundColor: 'white', paddingLeft: '3px', borderRadius: '2px' }}>
+            <div className="text-[#374151] font-bold text-base tracking-widest bg-white px-1 rounded-sm">
               EXPRESS
             </div>
           </div>
         </div>
 
+        {/* BARRA DE BÚSQUEDA */}
         <input
           type="text"
           placeholder="Buscar productos..."
-          style={{ flex: 1, padding: '10px 16px', borderRadius: '4px', border: 'none', fontSize: '15px', outline: 'none' }}
+          className="flex-1 px-4 py-2 rounded text-base outline-none border-2 border-[#4B6FBA] bg-[#F3F4F6] text-[#374151] placeholder-[#9CA3AF]"
         />
 
-        <button style={{
-          backgroundColor: '#374151',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          padding: '10px 20px',
-          fontWeight: 'bold',
-          fontSize: '15px',
-          cursor: 'pointer'
-        }}>
+        {/* BOTÓN BUSCAR */}
+        <button className="bg-[#374151] text-white px-5 py-2 rounded font-bold text-base cursor-pointer hover:bg-[#4B5563] transition-colors">
           Buscar
         </button>
+
       </header>
 
-      <nav style={{ backgroundColor: '#1a3278', padding: '8px 24px', display: 'flex', gap: '8px' }}>
+      {/* NAVEGACIÓN */}
+      <nav className="bg-[#1a3278] px-6 py-2 flex gap-2">
         {navItems.map(function(item) {
           return (
-            <button key={item} style={{
-              backgroundColor: '#F3F4F6',
-              color: '#374151',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '6px 14px',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}>
+            <button
+              key={item}
+              className="bg-[#F3F4F6] text-[#374151] px-4 py-1.5 rounded text-sm font-bold cursor-pointer hover:bg-white transition-colors"
+            >
               {item}
             </button>
           )
         })}
       </nav>
 
-      <main style={{ padding: '32px 24px', backgroundColor: '#F3F4F6', minHeight: '100vh' }}>
-        <h2 style={{ color: '#1E3A8A', marginBottom: '8px' }}>Bienvenido a Ventas Express</h2>
-        <p style={{ color: '#374151' }}>Próximamente: productos se veran aquí.</p>
+      {/* BODY */}
+      <main className="bg-[#F3F4F6] p-8 min-h-screen">
+        <h2 className="text-[#1E3A8A] text-2xl font-bold mb-2">
+          Bienvenido a Ventas Express
+        </h2>
+        <p className="text-[#374151]">
+          Encontrá los mejores productos al mejor precio.
+        </p>
       </main>
 
     </div>
