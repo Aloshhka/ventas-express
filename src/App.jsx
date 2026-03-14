@@ -75,7 +75,7 @@ function App() {
 
       <main style={{ padding: '32px 24px', backgroundColor: '#F3F4F6', minHeight: '100vh' }}>
         <h2 style={{ color: '#1E3A8A', marginBottom: '8px' }}>Bienvenido a Ventas Express</h2>
-        <p style={{ color: '#374151' }}>Próximamente: productos de Mercado Libre aquí.</p>
+        <p style={{ color: '#374151' }}>Próximamente: productos se veran aquí.</p>
       </main>
 
     </div>
