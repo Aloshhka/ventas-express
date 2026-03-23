@@ -1,6 +1,13 @@
+import { useNavigate } from 'react-router-dom'
+
 function ProductCard({ producto }) {
+  const navigate = useNavigate()
+
   return (
-    <div className="bg-white rounded-lg p-4 shadow hover:shadow-md transition-shadow cursor-pointer">
+    <div
+      onClick={() => navigate(`/producto/${producto.id}`)}
+      className="bg-white rounded-lg p-4 shadow hover:shadow-md transition-shadow cursor-pointer"
+    >
       <img
         src={producto.thumbnail}
         alt={producto.title}
@@ -12,11 +19,6 @@ function ProductCard({ producto }) {
       <p className="text-[#1E3A8A] text-xl font-bold">
         $ {producto.price.toLocaleString('es-AR')}
       </p>
-      {producto.original_price && (
-        <p className="text-gray-400 text-sm line-through">
-          $ {producto.original_price.toLocaleString('es-AR')}
-        </p>
-      )}
     </div>
   )
 }

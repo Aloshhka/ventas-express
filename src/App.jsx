@@ -1,30 +1,53 @@
-import { useState } from 'react'
-import { buscarProductos } from './services/mercadolibre'
+import { useState, useEffect } from 'react'
 import ProductCard from './components/ProductCard'
 
+const CATEGORIAS = [
+  { label: 'Todos', value: '' },
+  { label: 'Electrónica', value: 'electronics' },
+  { label: 'Joyería', value: 'jewelery' },
+  { label: 'Ropa hombre', value: "men's clothing" },
+  { label: 'Ropa mujer', value: "women's clothing" },
+]
+
 function App() {
-  const navItems = ['Categorías', 'Ofertas', 'Más vendidos', 'Cupones']
   const [query, setQuery] = useState('')
   const [productos, setProductos] = useState([])
-  const [cargando, setCargando] = useState(false)
+  const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const [categoriaActiva, setCategoriaActiva] = useState('')
 
-  async function handleBuscar() {
-    if (!query.trim()) return
+  async function cargarProductos(q = '', categoria = '') {
     setCargando(true)
     setError(null)
     try {
-      const resultados = await buscarProductos(query)
-      setProductos(resultados)
+      const params = new URLSearchParams()
+      if (q) params.append('q', q)
+      if (categoria) params.append('categoria', categoria)
+      const response = await fetch(`http://localhost:3001/api/buscar?${params}`)
+      const data = await response.json()
+      setProductos(data)
     } catch (e) {
-      setError('Hubo un error al buscar productos. Intentá de nuevo.')
+      setError('Error al cargar productos.')
     } finally {
       setCargando(false)
     }
   }
 
+  useEffect(() => {
+    cargarProductos()
+  }, [])
+
+  function handleBuscar() {
+    cargarProductos(query, categoriaActiva)
+  }
+
   function handleKeyDown(e) {
     if (e.key === 'Enter') handleBuscar()
+  }
+
+  function handleCategoria(valor) {
+    setCategoriaActiva(valor)
+    cargarProductos(query, valor)
   }
 
   return (
@@ -37,12 +60,8 @@ function App() {
             ⚡
           </div>
           <div className="leading-tight">
-            <div className="text-white font-bold text-base tracking-widest">
-              VENTAS
-            </div>
-            <div className="text-[#374151] font-bold text-base tracking-widest bg-white px-1 rounded-sm">
-              EXPRESS
-            </div>
+            <div className="text-white font-bold text-base tracking-widest">VENTAS</div>
+            <div className="text-[#374151] font-bold text-base tracking-widest bg-white px-1 rounded-sm">EXPRESS</div>
           </div>
         </div>
 
@@ -50,7 +69,7 @@ function App() {
           type="text"
           placeholder="Buscar productos..."
           value={query}
-          onChange={function(e) { setQuery(e.target.value) }}
+          onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           className="flex-1 px-4 py-2 rounded text-base outline-none border-2 border-[#4B6FBA] bg-[#F3F4F6] text-[#374151] placeholder-[#9CA3AF]"
         />
@@ -63,56 +82,50 @@ function App() {
         </button>
       </header>
 
-      {/* NAVEGACIÓN */}
-      <nav className="bg-[#1a3278] px-6 py-2 flex gap-2">
-        {navItems.map(function(item) {
-          return (
-            <button
-              key={item}
-              className="bg-[#F3F4F6] text-[#374151] px-4 py-1.5 rounded text-sm font-bold cursor-pointer hover:bg-white transition-colors"
-            >
-              {item}
-            </button>
-          )
-        })}
+      {/* CATEGORÍAS */}
+      <nav className="bg-[#1a3278] px-6 py-2 flex gap-2 flex-wrap">
+        {CATEGORIAS.map(cat => (
+          <button
+            key={cat.value}
+            onClick={() => handleCategoria(cat.value)}
+            className={`px-4 py-1.5 rounded text-sm font-bold cursor-pointer transition-colors
+              ${categoriaActiva === cat.value
+                ? 'bg-[#374151] text-white'
+                : 'bg-[#F3F4F6] text-[#374151] hover:bg-white'
+              }`}
+          >
+            {cat.label}
+          </button>
+        ))}
       </nav>
 
       {/* BODY */}
       <main className="bg-[#F3F4F6] p-8 min-h-screen">
 
-        {/* Estado inicial */}
-        {!cargando && productos.length === 0 && !error && (
-          <div className="text-center mt-20">
-            <p className="text-5xl mb-4">🛍️</p>
-            <h2 className="text-[#1E3A8A] text-2xl font-bold mb-2">
-              Bienvenido a Ventas Express
-            </h2>
-            <p className="text-[#374151]">
-              Escribí algo en el buscador para encontrar productos.
-            </p>
-          </div>
-        )}
-
-        {/* Cargando */}
         {cargando && (
           <div className="text-center mt-20">
-            <p className="text-[#1E3A8A] text-xl font-bold">Buscando productos...</p>
+            <p className="text-[#1E3A8A] text-xl font-bold">Cargando productos...</p>
           </div>
         )}
 
-        {/* Error */}
         {error && (
           <div className="text-center mt-20">
             <p className="text-red-500 text-lg">{error}</p>
           </div>
         )}
 
-        {/* Resultados */}
+        {!cargando && productos.length === 0 && !error && (
+          <div className="text-center mt-20">
+            <p className="text-5xl mb-4">🔍</p>
+            <p className="text-[#374151] text-lg">No se encontraron productos.</p>
+          </div>
+        )}
+
         {!cargando && productos.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {productos.map(function(producto) {
-              return <ProductCard key={producto.id} producto={producto} />
-            })}
+            {productos.map(producto => (
+              <ProductCard key={producto.id} producto={producto} />
+            ))}
           </div>
         )}
 
