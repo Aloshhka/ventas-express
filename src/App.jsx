@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useCarrito } from './context/CarritoContext'
 import ProductCard from './components/ProductCard'
 
 const CATEGORIAS = [
@@ -10,6 +12,8 @@ const CATEGORIAS = [
 ]
 
 function App() {
+  const navigate = useNavigate()
+  const { totalItems } = useCarrito()
   const [query, setQuery] = useState('')
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -26,7 +30,7 @@ function App() {
       const response = await fetch(`http://localhost:3001/api/buscar?${params}`)
       const data = await response.json()
       setProductos(data)
-    } catch (e) {
+    } catch {
       setError('Error al cargar productos.')
     } finally {
       setCargando(false)
@@ -80,6 +84,19 @@ function App() {
         >
           Buscar
         </button>
+
+        <button
+          onClick={() => navigate('/carrito')}
+          className="relative text-white text-2xl ml-2"
+        >
+          🛒
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              {totalItems}
+            </span>
+          )}
+        </button>
+
       </header>
 
       {/* CATEGORÍAS */}

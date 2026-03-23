@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useCarrito } from '../context/CarritoContext'
 
 function ProductoDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { agregarAlCarrito, totalItems } = useCarrito()
   const [producto, setProducto] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [agregado, setAgregado] = useState(false)
 
   useEffect(() => {
     async function cargar() {
@@ -13,14 +16,25 @@ function ProductoDetalle() {
         const response = await fetch(`https://fakestoreapi.com/products/${id}`)
         const data = await response.json()
         setProducto(data)
-      } catch (e) {
-        console.error(e)
+      } catch {
+        console.error('Error cargando producto')
       } finally {
         setCargando(false)
       }
     }
     cargar()
   }, [id])
+
+  function handleAgregar() {
+    agregarAlCarrito({
+      id: producto.id,
+      title: producto.title,
+      price: producto.price,
+      thumbnail: producto.image,
+    })
+    setAgregado(true)
+    setTimeout(() => setAgregado(false), 2000)
+  }
 
   if (cargando) return (
     <div className="text-center mt-20">
@@ -46,6 +60,18 @@ function ProductoDetalle() {
             <div className="text-[#374151] font-bold text-base tracking-widest bg-white px-1 rounded-sm">EXPRESS</div>
           </div>
         </div>
+        <div className="flex-1" />
+        <button
+          onClick={() => navigate('/carrito')}
+          className="relative text-white text-2xl"
+        >
+          🛒
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              {totalItems}
+            </span>
+          )}
+        </button>
       </header>
 
       {/* CONTENIDO */}
@@ -87,8 +113,15 @@ function ProductoDetalle() {
               <span className="text-[#374151] font-bold">{producto.rating?.rate}</span>
               <span className="text-[#9CA3AF]">({producto.rating?.count} reseñas)</span>
             </div>
-            <button className="w-full bg-[#1E3A8A] text-white py-3 rounded-lg font-bold text-lg hover:bg-[#374151] transition-colors">
-              Agregar al carrito
+            <button
+              onClick={handleAgregar}
+              className={`w-full py-3 rounded-lg font-bold text-lg transition-colors ${
+                agregado
+                  ? 'bg-green-500 text-white'
+                  : 'bg-[#1E3A8A] text-white hover:bg-[#374151]'
+              }`}
+            >
+              {agregado ? '✓ Agregado al carrito' : 'Agregar al carrito'}
             </button>
           </div>
 
