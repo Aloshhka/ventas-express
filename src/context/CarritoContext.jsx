@@ -10,9 +10,7 @@ export function CarritoProvider({ children }) {
       const existe = prev.find(p => p.id === producto.id)
       if (existe) {
         return prev.map(p =>
-          p.id === producto.id
-            ? { ...p, cantidad: p.cantidad + 1 }
-            : p
+          p.id === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
         )
       }
       return [...prev, { ...producto, cantidad: 1 }]
@@ -33,6 +31,10 @@ export function CarritoProvider({ children }) {
     )
   }
 
+  function vaciarCarrito() {
+    setCarrito([])
+  }
+
   const totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0)
   const totalPrecio = carrito.reduce((acc, p) => acc + p.price * p.cantidad, 0)
 
@@ -42,6 +44,7 @@ export function CarritoProvider({ children }) {
       agregarAlCarrito,
       quitarDelCarrito,
       cambiarCantidad,
+      vaciarCarrito,
       totalItems,
       totalPrecio
     }}>
