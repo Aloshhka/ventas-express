@@ -4,8 +4,10 @@ import { useCarrito } from '../context/CarritoContext'
 
 function Checkout() {
   const navigate = useNavigate()
-  const { carrito, totalPrecio, totalItems, vaciarCarrito } = useCarrito()
+  const { carrito, totalPrecio, totalItems, vaciarCarrito, guardarCompra } = useCarrito()
   const [pedidoConfirmado, setPedidoConfirmado] = useState(false)
+  const [carritoGuardado, setCarritoGuardado] = useState([])
+  const [totalGuardado, setTotalGuardado] = useState(0)
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -19,11 +21,14 @@ function Checkout() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-function handleConfirmar(e) {
-  e.preventDefault()
-  vaciarCarrito()
-  setPedidoConfirmado(true)
-}
+  function handleConfirmar(e) {
+    e.preventDefault()
+    setCarritoGuardado([...carrito])
+    setTotalGuardado(totalPrecio)
+    guardarCompra(form)
+    vaciarCarrito()
+    setPedidoConfirmado(true)
+  }
 
   const formCompleto = Object.values(form).every(v => v.trim() !== '')
 
@@ -46,7 +51,7 @@ function handleConfirmar(e) {
           <p className="text-[#6B7280] mb-6">Te enviaremos los detalles a <strong>{form.email}</strong></p>
           <div className="bg-[#F3F4F6] rounded-lg p-4 mb-6 text-left">
             <p className="text-[#374151] font-bold mb-2">Resumen del pedido:</p>
-            {carrito.map(p => (
+            {carritoGuardado.map(p => (
               <div key={p.id} className="flex justify-between text-sm text-[#6B7280] mb-1">
                 <span className="line-clamp-1 flex-1">{p.title} x{p.cantidad}</span>
                 <span className="ml-4 font-bold">$ {(p.price * p.cantidad).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
@@ -54,7 +59,7 @@ function handleConfirmar(e) {
             ))}
             <div className="border-t border-[#E5E7EB] mt-3 pt-3 flex justify-between font-bold text-[#1E3A8A]">
               <span>Total</span>
-              <span>$ {totalPrecio.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
+              <span>$ {totalGuardado.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
           <button

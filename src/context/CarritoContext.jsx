@@ -4,6 +4,10 @@ const CarritoContext = createContext()
 
 export function CarritoProvider({ children }) {
   const [carrito, setCarrito] = useState([])
+  const [compras, setCompras] = useState(() => {
+    const guardadas = localStorage.getItem('misCompras')
+    return guardadas ? JSON.parse(guardadas) : []
+  })
 
   function agregarAlCarrito(producto) {
     setCarrito(prev => {
@@ -35,16 +39,32 @@ export function CarritoProvider({ children }) {
     setCarrito([])
   }
 
+  function guardarCompra(datosComprador) {
+    const nuevaCompra = {
+      id: Date.now(),
+      fecha: new Date().toLocaleDateString('es-AR'),
+      hora: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+      productos: carrito,
+      total: totalPrecio,
+      comprador: datosComprador
+    }
+    const nuevasCompras = [nuevaCompra, ...compras]
+    setCompras(nuevasCompras)
+    localStorage.setItem('misCompras', JSON.stringify(nuevasCompras))
+  }
+
   const totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0)
   const totalPrecio = carrito.reduce((acc, p) => acc + p.price * p.cantidad, 0)
 
   return (
     <CarritoContext.Provider value={{
       carrito,
+      compras,
       agregarAlCarrito,
       quitarDelCarrito,
       cambiarCantidad,
       vaciarCarrito,
+      guardarCompra,
       totalItems,
       totalPrecio
     }}>
