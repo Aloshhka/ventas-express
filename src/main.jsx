@@ -11,7 +11,7 @@ import MisCompras from './pages/MisCompras.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/ventas-express">
       <CarritoProvider>
         <Routes>
           <Route path="/" element={<App />} />

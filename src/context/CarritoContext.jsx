@@ -40,10 +40,11 @@ export function CarritoProvider({ children }) {
   }
 
   function guardarCompra(datosComprador) {
+    const ahora = new Date()
     const nuevaCompra = {
-      id: Date.now(),
-      fecha: new Date().toLocaleDateString('es-AR'),
-      hora: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+      id: ahora.getTime(),
+      fecha: ahora.toLocaleDateString('es-AR'),
+      hora: ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
       productos: carrito,
       total: totalPrecio,
       comprador: datosComprador
